@@ -19,7 +19,7 @@ export default class AuthService {
   auth0 = new auth0.WebAuth({
     domain: 'dev-mbta.auth0.com',
     clientID: 'atSqvScJ3XAqmDiHNdQfV42f7K87EamM',
-    redirectUri: 'http://localhost:8080/',
+    redirectUri: 'http://localhost:8080',
     audience: 'https://django-vuejs-api',
     responseType: 'token id_token',
     scope: 'openid profile'
@@ -31,9 +31,8 @@ export default class AuthService {
     this.auth0.authorize()
   }
 
-  // this method calls the parseHash() method of Auth0
-  // to get authentication information from the callback URL
   handleAuthentication () {
+      console.log("Handling auth")
     // users returning from Auth0 (after authentication) will have params on the hash
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
@@ -95,6 +94,7 @@ export default class AuthService {
   }
 
   silentAuth () {
+      console.log("Silent Auth")
     return new Promise((resolve, reject) => {
       this.auth0.checkSession({}, (err, authResult) => {
         if (err) return reject(err)

@@ -113,14 +113,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    ),
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         # 'rest_framework.permissions.IsAuthenticated',
+#        'rest_framework.authentication.TokenAuthentication'
+#     ),
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#     #    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+#         'rest_framework.permissions.IsAdminUser'
+#     ),
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

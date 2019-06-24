@@ -2,26 +2,43 @@
   <div>
     <button
       class="btn btn-primary btn-margin"
-      v-if="!authenticated"
       @click="login()">
       Login
     </button>
 
     <button
       class="btn btn-primary btn-margin"
-      v-if="authenticated"
-      @click="privateMessage()">
+      @click="getTrainLines()">
       Call Private
     </button>
 
     <button
       class="btn btn-primary btn-margin"
-      v-if="authenticated"
       @click="logout()">
       Logout
     </button>
     {{ message }}
     <br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Line Name</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="trainline in trainlines" v-bind:key="trainline">
+          <th scope="row">{{trainline.id}}</th>
+          <td>{{trainline.line_name}}</td>
+          <td>{{trainline.status}}</td>
+          <td>
+            <button class="btn btn-info" v-on:click="getTrainLine(trainline.id)">Edit</button>
+            <button class="btn btn-danger" v-on:click="deleteTrainLine(trainline.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -35,8 +52,10 @@ const auth = new AuthService()
 export default {
   name: 'app',
   data () {
-    this.handleAuthentication()
+    // this.handleAuthentication()
     this.authenticated = false
+    this.handleAuthentication()
+    this.getTrainLines()
 
     auth.authNotifier.on('authChange', authState => {
       this.authenticated = authState.authenticated
@@ -44,7 +63,8 @@ export default {
 
     return {
       authenticated: false,
-      message: ''
+      message: '',
+      trainlines: []
     }
   },
   methods: {
@@ -64,6 +84,13 @@ export default {
         console.log(response.data)
         this.message = response.data || ''
       })
+    },
+    getTrainLines() {
+      const url = `${API_URL}/api/trains/`
+      return axios.get(url, {headers: {Authorization: `Bearer ${auth.getAuthToken()}`}}).then((response) => {
+        console.log(response.data)
+        this.trainlines = response.data || []
+      })
     }
   }
 }
@@ -78,4 +105,7 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+
+@import'~bootstrap/dist/css/bootstrap.css'
 </style>
