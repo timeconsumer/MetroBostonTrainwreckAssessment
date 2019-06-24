@@ -1,6 +1,7 @@
-h1 {
-  background-color: aqua;
+.btn-info {
+  background-color: green; 
 }
+
 /* Absolute Center Spinner */
 .loading {
     position: fixed;

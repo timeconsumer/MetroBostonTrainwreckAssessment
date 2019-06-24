@@ -19,12 +19,12 @@
       <div class="container">
         <div class="row">
           <h1 id="title">List of Trains
-          <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addArticleModal">Add train line</button>
+          <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTrainLineModal">Add train line</button>
           </h1>
           &emsp;
           <div class="form-inline my-2 my-lg-0" style="margin-left: 40%;">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getArticles()">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getTrainLines()">Search</button>
           </div>
           <table class="table">
             <thead>
@@ -40,41 +40,41 @@
                 <td>${trainline.line_name}</td>
                 <td>${trainline.status}</td>
                 <td>
-                  <button class="btn btn-info" v-on:click="getArticle(article.article_id)">Edit</button>
+                  <button class="btn btn-info" v-on:click="getTrainLine(trainline.id)">Edit</button>
                   <button class="btn btn-danger" v-on:click="deleteArticle(article.article_id)">Delete</button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <!-- Add Article Modal -->
-          <div class="modal fade" id="addArticleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <!-- Add Train Line Modal -->
+          <div class="modal fade" id="addTrainLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">ADD ARTICLE</h5>
+                  <h5 class="modal-title" id="exampleModalLongTitle">ADD Train Line</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <form v-on:submit.prevent="addArticle()">
+                <form v-on:submit.prevent="addTrainLine()">
                 <div class="modal-body">
                     <div class="form-group">
-                      <label for="article_heading">Article Heading</label>
+                      <label for="line_name">Line Name</label>
                       <input
                         type="text"
                         class="form-control"
-                        id="article_heading"
-                        placeholder="Enter Article Heading"
-                        v-model="newArticle.article_heading"
+                        id="line_name"
+                        placeholder="Enter Line Name"
+                        v-model="newLine.line_name"
                         required="required" >
                     </div>
                     <div class="form-group">
-                      <label for="article_body">Article Body</label>
+                      <label for="status">Status</label>
                       <textarea
                         class="form-control"
-                        id="article_body"
-                        placeholder="Enter Article Body"
-                        v-model="newArticle.article_body"
+                        id="status"
+                        placeholder="Enter Status"
+                        v-model="newLine.status"
                         required="required"
                         rows="3"></textarea>
                     </div>
@@ -89,8 +89,8 @@
             <div class="loading" v-if="loading===true">Loading&#8230;</div>
           </div>
           <!-- End of add article modal -->
-          <!-- Edit Article Modal -->
-          <div class="modal fade" id="editArticleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <!-- Edit TrainLine Modal -->
+          <div class="modal fade" id="editTrainLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -102,22 +102,22 @@
                 <form v-on:submit.prevent="updateArticle()">
                 <div class="modal-body">
                     <div class="form-group">
-                      <label for="article_heading">Article Heading</label>
+                      <label for="line_name">Line Name</label>
                       <input
                         type="text"
                         class="form-control"
-                        id="article_heading"
+                        id="line_name"
                         placeholder="Enter Article Heading"
-                        v-model="currentArticle.article_heading"
+                        v-model="currentTrain.line_name"
                         required="required" >
                     </div>
                     <div class="form-group">
-                      <label for="article_body">Article Body</label>
+                      <label for="status">Article Body</label>
                       <textarea
                         class="form-control"
-                        id="article_body"
+                        id="status"
                         placeholder="Enter Article Body"
-                        v-model="currentArticle.article_body"
+                        v-model="currentTrain.status"
                         required="required"
                         rows="3"></textarea>
                     </div>
@@ -155,9 +155,9 @@
       data: {
         trainlines: [],
         loading: true,
-        currentArticle: {},
+        currentTrain: {},
         message: null,
-        newArticle: { 'article_heading': null, 'article_body': null },
+        newLine: { 'line_name': null, 'status': null },
         search_term: '',
       },
       mounted: function() {
@@ -177,12 +177,12 @@
                 console.log(err);
               })
         },
-        getArticle: function(id) {
+        getTrainLine: function(id) {
           this.loading = true;
-          this.$http.get(`/api/article/${id}/`)
+          this.$http.get(`/api/trains/${id}/`)
               .then((response) => {
-                this.currentArticle = response.data;
-                $("#editArticleModal").modal('show');
+                this.currentTrain = response.data;
+                $("#editTrainLineModal").modal('show');
                 this.loading = false;
               })
               .catch((err) => {
@@ -190,12 +190,13 @@
                 console.log(err);
               })
         },
-        addArticle: function() {
+        addTrainLine: function() {
           this.loading = true;
-          this.$http.post('/api/article/',this.newArticle)
+          this.$http.post('/api/trains/',this.newLine)
               .then((response) => {
                 this.loading = true;
-                this.getArticles();
+                $('#addTrainLineModal').modal('hide');
+                this.getTrainLines();
               })
               .catch((err) => {
                 this.loading = true;
@@ -204,11 +205,12 @@
         },
         updateArticle: function() {
           this.loading = true;
-          this.$http.put(`/api/article/${this.currentArticle.article_id}/`, this.currentArticle)
+          this.$http.put(`/api/trains/${this.currentTrain.id}/`, this.currentTrain)
               .then((response) => {
                 this.loading = false;
-                this.currentArticle = response.data;
-                this.getArticles();
+                this.currentTrain = response.data;
+                $("#editTrainLineModal").modal('hide');
+                this.getTrainLines();
               })
               .catch((err) => {
                 this.loading = false;
@@ -217,10 +219,10 @@
         },
         deleteArticle: function(id) {
           this.loading = true;
-          this.$http.delete(`/api/article/${id}/`)
+          this.$http.delete(`/api/trains/${id}/`)
               .then((response) => {
                 this.loading = false;
-                this.getArticles();
+                this.getTrains();
               })
               .catch((err) => {
                 this.loading = false;
