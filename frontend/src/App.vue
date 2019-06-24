@@ -19,43 +19,26 @@
     </button>
     {{ message }}
     <br>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Line Name</th>
-          <th scope="col">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="trainline in trainlines" v-bind:key="trainline">
-          <th scope="row">{{trainline.id}}</th>
-          <td>{{trainline.line_name}}</td>
-          <td>{{trainline.status}}</td>
-          <td>
-            <button class="btn btn-info" v-on:click="getTrainLine(trainline.id)">Edit</button>
-            <button class="btn btn-danger" v-on:click="deleteTrainLine(trainline.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <train-grid></train-grid>
   </div>
 </template>
 
 <script>
 import AuthService from './auth/AuthService'
+import ButtonGrid from './components/ButtonGrid'
 import axios from 'axios'
 
 const API_URL = 'http://localhost:8000'
 const auth = new AuthService()
-
 export default {
   name: 'app',
+  components: {
+    'train-grid': ButtonGrid
+  },
   data () {
     // this.handleAuthentication()
     this.authenticated = false
     this.handleAuthentication()
-    this.getTrainLines()
 
     auth.authNotifier.on('authChange', authState => {
       this.authenticated = authState.authenticated
