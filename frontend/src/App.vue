@@ -68,7 +68,7 @@ export default {
         this.message = response.data || ''
       })
     },
-    getTrainLines() {
+    getTrainLines () {
       const url = `${API_URL}/api/trains/`
       return axios.get(url, {headers: {Authorization: `Bearer ${auth.getAuthToken()}`}}).then((response) => {
         console.log(response.data)
